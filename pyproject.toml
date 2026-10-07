@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sharepoint-integration"
+version = "1.0.0"
+description = "Standalone Microsoft Graph SharePoint integration (read + upload)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "SharePoint Integration" }]
+dependencies = [
+    "requests>=2.31.0",
+    "urllib3>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+fastapi = ["fastapi>=0.110.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["sharepoint_integration"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "sharepoint_integration",
+    "router.py",
+    "verify_connection.py",
+    "pyproject.toml",
+    "README.md",
+    ".env.example",
+]
