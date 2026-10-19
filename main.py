@@ -160,7 +160,6 @@ def _constant_time_compare(a: str, b: str) -> bool:
 
 async def _process_notifications(notifications: List[NotificationItem]):
     """Handle incoming Graph change notifications.
-
     Notifications are only *signals* that something changed in the
     library — they are not the list of changes. Each notification
     schedules a background Microsoft Graph Delta API poll (coalesced
