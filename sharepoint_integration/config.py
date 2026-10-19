@@ -47,8 +47,19 @@ SHAREPOINT_POOL_MAXSIZE: int = _get_int("SHAREPOINT_POOL_MAXSIZE", 50)
 
 
 def has_credentials() -> bool:
-    """True when the three authentication variables are all set."""
-    return bool(SHAREPOINT_TENANT_ID and SHAREPOINT_CLIENT_ID and SHAREPOINT_CLIENT_SECRET)
+    """True when the three authentication variables are all set.
+
+    Values are read from the environment at call time. ``.env`` is
+    loaded by ``sharepoint_integration.service`` (via ``load_dotenv``)
+    when that module is imported, which can happen after this module
+    is first imported; reading at call time keeps this check correct
+    regardless of import order.
+    """
+    return bool(
+        os.getenv("SHAREPOINT_TENANT_ID")
+        and os.getenv("SHAREPOINT_CLIENT_ID")
+        and os.getenv("SHAREPOINT_CLIENT_SECRET")
+    )
 
 
 def require_credentials() -> None:

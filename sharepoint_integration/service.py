@@ -667,7 +667,7 @@ class SharePointService:
         except Exception as e:
             logger.error(f"Error downloading SharePoint file '{sharepoint_file.name}': {e}")
             raise
- 
+
     async def get_file_content(self, sharepoint_file: SharePointFile) -> bytes:
         """Get file content as bytes"""
         try:
@@ -675,7 +675,27 @@ class SharePointService:
         except Exception as e:
             logger.error(f"Error getting content for SharePoint file '{sharepoint_file.name}': {e}")
             raise
- 
+
+    async def download_file_content_by_id(self, drive_id: str, item_id: str) -> bytes:
+        """
+        Download file content directly by drive ID and item ID using the Graph /content endpoint.
+        Returns file content as bytes.
+        """
+        token = await self._get_access_token()
+        headers = {'Authorization': f'Bearer {token}'}
+        content_url = f"https://graph.microsoft.com/v1.0/drives/{drive_id}/items/{item_id}/content"
+        
+        response = self._make_request_with_retry('GET', content_url, headers=headers, allow_redirects=True)
+        if response.status_code == 401:
+            logger.warning(f"/content request unauthorized for item {item_id}, refreshing token...")
+            self.access_token = None
+            token = await self._get_access_token()
+            headers = {'Authorization': f'Bearer {token}'}
+            response = self._make_request_with_retry('GET', content_url, headers=headers, allow_redirects=True)
+        response.raise_for_status()
+        logger.info("Successfully downloaded file content for item %s (%d bytes)", item_id, len(response.content))
+        return response.content
+
     async def list_files_in_folder_by_relative_path(self, relative_folder_path: str) -> list:
         """
         List all files in a folder (relative to base folder) recursively, returning SharePointFile objects.

@@ -5,3 +5,7 @@ python-dotenv>=1.0.0
 # Optional: install only if you need the FastAPI router.
 # Example: pip install -r requirements.txt -r requirements-fastapi.txt
 # or: pip install fastapi>=0.110.0
+
+# Optional: install for text extraction from DOCX/PDF files
+# Example: pip install -r requirements.txt -r requirements-text-extraction.txt
+# or: pip install python-docx>=1.1.0 pypdf>=4.0.0
